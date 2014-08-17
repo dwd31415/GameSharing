@@ -3,9 +3,9 @@ GameSharing
 
 GameSharing is C++ bridge to the Java Google Play Games Services SDK for cocos2d-X.
 You can use this features at the moment:
-* .Submit scores to Leaderboards
-* .Open the Leaderboards UI
-* .Unlock Achivements
+* Submit scores to Leaderboards
+* Open the Leaderboards UI
+* Unlock Achivements
 
 Requirements
 ===========
