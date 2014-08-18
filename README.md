@@ -6,6 +6,7 @@ You can use this features at the moment:
 * Submit scores to Leaderboards
 * Open the Leaderboards UI
 * Unlock Achievements
+* Open the Achievements UI
 
 Requirements
 ===========
