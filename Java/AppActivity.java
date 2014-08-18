@@ -31,10 +31,16 @@ import your.app.id.*;
 import android.os.Bundle;
 import com.google.android.gms.games.Games;
 import android.content.Context;
+import android.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import android.content.Intent;
+import android.app.Activity;
 
 public class AppActivity extends BaseGameActivity {
     static int currentID;
     static int currentAchievementID;
+    static boolean gpgAvailable;
     
     static String[] leaderboardIDs;
     static String[] achievementIDs;
@@ -42,17 +48,18 @@ public class AppActivity extends BaseGameActivity {
     
     @Override
     public void onSignInSucceeded(){
-        
+        gpgAvailable = true;
     }
     
     @Override
     public void onSignInFailed(){
-        
+        gpgAvailable = false;
     }
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String leaderboardIdsRaw = getString(R.string.leaderboards);
+        Log.v("GPG","Hello World");
         String achievementIdsRaw = getString(R.string.achievements);
         
         leaderboardIDs = leaderboardIdsRaw.split(";");
@@ -69,16 +76,35 @@ public class AppActivity extends BaseGameActivity {
     
     /*@brief This function opens the leaderboards ui for an leaderboard id*/
     static public void openLeaderboardUI(){
+        if(gpgAvailable){
                 ((AppActivity)currentContext).runOnUiThread(new Runnable() {
             public void run() {
                 ((AppActivity)currentContext).startActivityForResult(Games.Leaderboards.getLeaderboardIntent(((AppActivity)currentContext).getGameHelper().getApiClient(), leaderboardIDs[currentID]),2);
             }
-        });
+                });
+        }
+    }
+    
+    static public boolean isGPGSupported(){
+        return gpgAvailable;
     }
     
     static public void submitScoreToLeaderboard(int score)
     {
+        if(gpgAvailable){
         Games.Leaderboards.submitScore(((AppActivity)currentContext).getGameHelper().getApiClient(),leaderboardIDs[currentID],score);
+        updateAchievement(100);
+        }
+    }
+    
+    static public void showAchievements() {
+        if(gpgAvailable){
+        ((AppActivity)currentContext).runOnUiThread(new Runnable() {
+            public void run() {
+                ((AppActivity)currentContext).startActivityForResult(Games.Achievements.getAchievementsIntent(((AppActivity)currentContext).getGameHelper().getApiClient()), 5);
+            }
+        });
+        }
     }
     
     static public void openAchievement(int achievementID){
@@ -86,7 +112,12 @@ public class AppActivity extends BaseGameActivity {
     }
     
     static public void updateAchievement(int percentage){
-        Games.Achievements.increment(((AppActivity)currentContext).getGameHelper().getApiClient(),achievementIDs[currentAchievementID],percentage);
+        if(gpgAvailable){
+        Log.v("GPG",achievementIDs[currentAchievementID]);
+       Games.Achievements.unlock(((AppActivity)currentContext).getGameHelper().getApiClient(), achievementIDs[currentAchievementID]);
+        }
     }
     
 }
+
+

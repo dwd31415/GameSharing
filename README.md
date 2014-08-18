@@ -10,13 +10,15 @@ You can use this features at the moment:
 Requirements
 ===========
 
-You project must use cocos2d-x 3.2 or higher and you must already have set up Google Play Services for your project.
+You project must use cocos2d-x 3.2 or higher and you must already have Google Play Services set up for your project.
 
 How to use GameSharing
 =====================
 
-To use Game Sharing you only have to add the class body from AppActvity to your AppActvity.java
-class. Then copy the GameSharing.cpp and GameSharing.h files to your project and you are good to go.
+To use Game Sharing you only have to add the class body  and the imports from AppActvity to your AppActvity.java
+class, after that copy the other .java files into your project and replace all your.app.id keywords with your app ID.
+Once you did that, set MainActivity to the main activity in your AndroidMainfest.xml file and add AppActvity and NoGPGAppActvity
+to the list of Activitys. Then copy the C++/GameSharing.cpp and C++/GameSharing.h file into your project and you are good to go.
 For more information please take a look at the wiki.
 
 Is my project still compatible with other operation systems if I use GameSharing

@@ -27,6 +27,14 @@ public:
     /**@brief This method unlocks an achivement
        @param ID: The index of the achivement in your list.*/
     static void UnlockAchivement(int ID);
+    /**@brief Shows the achievements window*/
+    static void ShowAchievementsUI();
+    /**@brief Checks if GPG is available*/
+    static bool IsGPGAvailable();
+    /**@brief If the IsGPGAvailable method was called it is not requiered to call again.*/
+    static bool wasGPGAvailableCalled;
+    /**@brief Return value of the IsGPGAvaiblable function.*/
+    static bool bIsGPGAvailable;
 };
 
 #endif /* defined(__PaperChase__GameSharing__) */
