@@ -12,6 +12,9 @@ Requirements
 ===========
 
 You project must use cocos2d-x 3.2 or higher and you must already have Google Play Services set up for your project.
+If you don't know how to do that, you can take a look at a this tutorial I posted on my blog:
+
+http://adriandawid.wordpress.com/2014/08/18/tutorial-how-to-use-google-play-services-with-cocos2d-x-for-android/
 
 How to use GameSharing
 =====================
