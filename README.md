@@ -31,6 +31,34 @@ Is my project still compatible with other operating system if I use GameSharing
 Yes it is. The GameSharing class only compiles the Google Play Games relevant parts, if you compile for android.
 On other operating system all methods just have no effect at all, but won't produce any compiler errors.
 
+How to extend GameSharing?
+==========================
+
+If you want to add a feature to GameSharingand you know how to develop with the JNI(Java Natvie Interface), you can do 
+that. You just have to addd a new static function to the AppActvity and write all GPGS code into it. Then add a new function to the GameSharing C++ class and add this code snipped to it:
+
+```
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+    if(IsGPGAvailable()){
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t
+                                       , "org/cocos2dx/cpp.AppActivity"
+                                       , "yourStaticMethodName"
+                                       , "yourMethodSignature"))
+    {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID);
+        // Release
+        t.env->DeleteLocalRef(t.classID);
+    }
+    }
+    else{
+        MessageBox("Google Play Games Services are not actvie.", "Error");
+    }
+#else
+    CCLOG("No GPGS available on this platform.");
+#endif
+```
+
 License
 =======
 Apache License
