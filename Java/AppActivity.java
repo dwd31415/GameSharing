@@ -59,7 +59,6 @@ public class AppActivity extends BaseGameActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String leaderboardIdsRaw = getString(R.string.leaderboards);
-        Log.v("GPG","Hello World");
         String achievementIdsRaw = getString(R.string.achievements);
         
         leaderboardIDs = leaderboardIdsRaw.split(";");
@@ -70,6 +69,9 @@ public class AppActivity extends BaseGameActivity {
         super.onCreate(savedInstanceState);
     }
     
+    /*@brief Changes the actvie leaderboard
+      @param The index of the leaderboard
+    */
     static public void openLeaderboard(int leaderboardID){
          currentID = leaderboardID;
     }
@@ -89,6 +91,7 @@ public class AppActivity extends BaseGameActivity {
         return gpgAvailable;
     }
     
+    /*@brief Submits a score to the leaderboard that is currently actvie*/
     static public void submitScoreToLeaderboard(int score)
     {
         if(gpgAvailable){
@@ -97,6 +100,7 @@ public class AppActivity extends BaseGameActivity {
         }
     }
     
+     /*@brief Shows the achievements ui*/
     static public void showAchievements() {
         if(gpgAvailable){
         ((AppActivity)currentContext).runOnUiThread(new Runnable() {
@@ -107,13 +111,14 @@ public class AppActivity extends BaseGameActivity {
         }
     }
     
+    /*@brief Changes the actvie Achievement
+      @param The index of the achievement in the list*/
     static public void openAchievement(int achievementID){
         currentAchievementID = achievementID;
     }
     
     static public void updateAchievement(int percentage){
         if(gpgAvailable){
-        Log.v("GPG",achievementIDs[currentAchievementID]);
        Games.Achievements.unlock(((AppActivity)currentContext).getGameHelper().getApiClient(), achievementIDs[currentAchievementID]);
         }
     }
