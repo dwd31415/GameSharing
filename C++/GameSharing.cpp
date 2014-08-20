@@ -10,8 +10,8 @@
 
 USING_NS_CC;
 
-bool GameSharing::bIsGPGAvailable;
-bool GameSharing::wasGPGAvailableCalled;
+bool GameSharing::bIsGPGAvailable = true;
+bool GameSharing::wasGPGAvailableCalled = false;
 
 void GameSharing::SubmitScore(int score)
 {
@@ -112,24 +112,25 @@ void GameSharing::ShowAchievementsUI(){
 }
 
 bool GameSharing::IsGPGAvailable(){
-    bool tmp;
+    bool tmp = false;
+    if (!wasGPGAvailableCalled) {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
-    if(wasGPGAvailableCalled){
-    JniMethodInfo t;
-    if (JniHelper::getStaticMethodInfo(t
-                                       , "org/cocos2dx/cpp.AppActivity"
-                                       , "isGPGSupported"
-                                       , "()Z"))
-    {
-        tmp = t.env->CallStaticBooleanMethod(t.classID, t.methodID);
-        // Release
-        t.env->DeleteLocalRef(t.classID);
+        JniMethodInfo t;
+        if (JniHelper::getStaticMethodInfo(t
+                                           , "org/cocos2dx/cpp.AppActivity"
+                                           , "isGPGSupported"
+                                           , "()Z"))
+        {
+            tmp = t.env->CallStaticBooleanMethod(t.classID, t.methodID);
+            // Release
+            t.env->DeleteLocalRef(t.classID);
+        }
+#endif
+        bIsGPGAvailable = tmp;
     }
-    wasGPGAvailableCalled = true;
-    }else{
+    else{
         tmp = bIsGPGAvailable;
     }
-#endif
-    bIsGPGAvailable = tmp;
+    wasGPGAvailableCalled = true;
     return tmp;
 }
