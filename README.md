@@ -25,7 +25,7 @@ Once you did that, set MainActivity to the main activity in your AndroidMainfest
 to the list of Activitys. Then copy the C++/GameSharing.cpp and C++/GameSharing.h file into your project and you are good to go.
 For more information please take a look at the wiki.
 
-Is my project still compatible with other operating system if I use GameSharing
+Is my project still compatible with other operating systems if I use GameSharing
 ===============================================================================
 
 Yes it is. The GameSharing class only compiles the Google Play Games relevant parts, if you compile for android.
