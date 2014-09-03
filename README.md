@@ -59,6 +59,12 @@ that. You just have to addd a new static function to the AppActvity and write al
 #endif
 ```
 
+Roadmap
+=======
+
+https://trello.com/b/lqU4UZTi/gamesharing-roadmap
+
+
 License
 =======
 Apache License
