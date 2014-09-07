@@ -31,7 +31,41 @@ iOS:
 
 To use GameSharing on iOS copy the C++ folder into your Classes folder
 and add all files inside of the Objetive-C++ folder to your iOS Project.
-For more information please take a look at the wiki.
+Then you must change the class definition of AppController to this:
+
+```
+#import <UIKit/UIKit.h>
+#import <GameKit/GameKit.h>
+#import "RootViewController.h"
+
+@interface AppController : NSObject <UIApplicationDelegate,GKLeaderboardViewControllerDelegate,GKAchievementViewControllerDelegate> {
+    UIWindow *window;
+}
+@property(nonatomic, readonly) RootViewController* viewController;
+
+@end
+
+
+```
+
+If you want the "Done" buttons inside of the GameCenter UI to work you also need to add this code to the  AppController.mm file:
+
+
+```
+- (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+{
+    AppController* delegate = (AppController*) [UIApplication sharedApplication].delegate;
+    [delegate.viewController dismissModalViewControllerAnimated:YES];
+    
+}
+
+-(void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController
+{
+    AppController* delegate = (AppController*) [UIApplication sharedApplication].delegate;
+    [delegate.viewController dismissModalViewControllerAnimated:YES];
+}
+```
+
 
 Is my project still compatible with other operating systems if I use GameSharing
 ===============================================================================
