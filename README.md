@@ -33,7 +33,7 @@ To use GameSharing on iOS copy the C++ folder into your Classes folder
 and add all files inside of the Objetive-C++ folder to your iOS Project.
 For more information please take a look at the wiki.
 
-Is my project still compatible with other operating system if I use GameSharing
+Is my project still compatible with other operating systems if I use GameSharing
 ===============================================================================
 
 Yes it is. The GameSharing class only compiles the Google Play Games relevant parts, if you compile for android.
@@ -69,6 +69,7 @@ that. You just have to add a new static function to the AppActvity and write all
 #endif
 ```
 
+<<<<<<< HEAD
 iOS:
 
 To add a iOS feature to GamSharing you need to add a static function to the iOS-Only part of GameSharing.h.
@@ -79,6 +80,13 @@ Then implement this function in GameCenterHelper.mm, bear in mind that you need 
     //Your code
 #endif
 ```  
+=======
+Roadmap
+=======
+
+https://trello.com/b/lqU4UZTi/gamesharing-roadmap
+
+>>>>>>> FETCH_HEAD
 
 License
 =======

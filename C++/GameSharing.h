@@ -1,6 +1,6 @@
 //
 //  GameSharing.h
-//  PaperChase
+//  Copyright (c) Adrian Dawid 2014
 //
 //  Created by Adrian Dawid on 17.08.14.
 //
