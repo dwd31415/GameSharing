@@ -16,6 +16,8 @@ If you don't know how to do that, you can take a look at a this tutorial I poste
 
 http://adriandawid.wordpress.com/2014/08/18/tutorial-how-to-use-google-play-services-with-cocos2d-x-for-android/
 
+On iOS you only need to import the GameKit Library into your project in order to use GameSharing.
+
 How to use GameSharing
 =====================
 
