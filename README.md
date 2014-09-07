@@ -1,7 +1,7 @@
 GameSharing
 ===========
 
-GameSharing is C++ bridge to the Java Google Play Games Services SDK for cocos2d-X.
+GameSharing is C++ bridge to the Java Google Play Games Services SDK and Apples Game Center for cocos2d-X.
 You can use this features at the moment:
 * Submit scores to Leaderboards
 * Open the Leaderboards UI
@@ -19,10 +19,18 @@ http://adriandawid.wordpress.com/2014/08/18/tutorial-how-to-use-google-play-serv
 How to use GameSharing
 =====================
 
+Android:
+
 To use Game Sharing you only have to add the class body  and the imports from AppActvity to your AppActvity.java
 class, after that copy the other .java files into your project and replace all your.app.id keywords with your app ID.
 Once you did that, set MainActivity to the main activity in your AndroidMainfest.xml file and add AppActvity and NoGPGAppActvity
-to the list of Activitys. Then copy the C++/GameSharing.cpp and C++/GameSharing.h file into your project and you are good to go.
+to the list of Activitys. Then copy the C++/GameSharing.cpp and C++/GameSharing.h file into your project and you are ready to use GameSharing.
+For more information please take a look at the wiki.
+
+iOS:
+
+To use GameSharing on iOS copy the C++ folder into your Classes folder
+and add all files inside of the Objetive-C++ folder to your iOS Project.
 For more information please take a look at the wiki.
 
 Is my project still compatible with other operating system if I use GameSharing
@@ -34,8 +42,10 @@ On other operating system all methods just have no effect at all, but won't prod
 How to extend GameSharing?
 ==========================
 
-If you want to add a feature to GameSharingand you know how to develop with the JNI(Java Natvie Interface), you can do 
-that. You just have to addd a new static function to the AppActvity and write all GPGS code into it. Then add a new function to the GameSharing C++ class and add this code snipped to it:
+Android:
+
+If you want to add a feature to GameSharing and you know how to develop with the JNI(Java Natvie Interface), you can do 
+that. You just have to add a new static function to the AppActvity and write all GPGS code into it. Then add a new function to the GameSharing C++ class and add this code snipped to it:
 
 ```
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
@@ -58,6 +68,17 @@ that. You just have to addd a new static function to the AppActvity and write al
     CCLOG("No GPGS available on this platform.");
 #endif
 ```
+
+iOS:
+
+To add a iOS feature to GamSharing you need to add a static function to the iOS-Only part of GameSharing.h.
+Then implement this function in GameCenterHelper.mm, bear in mind that you need to surround a call to your feature with this code:
+
+```
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    //Your code
+#endif
+```  
 
 License
 =======
