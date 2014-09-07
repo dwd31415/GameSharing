@@ -103,7 +103,7 @@ that. You just have to add a new static function to the AppActvity and write all
 #endif
 ```
 
-<<<<<<< HEAD
+
 iOS:
 
 To add a iOS feature to GamSharing you need to add a static function to the iOS-Only part of GameSharing.h.
@@ -120,7 +120,7 @@ Roadmap
 
 https://trello.com/b/lqU4UZTi/gamesharing-roadmap
 
->>>>>>> FETCH_HEAD
+
 
 License
 =======
