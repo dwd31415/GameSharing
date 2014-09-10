@@ -31,6 +31,8 @@ bool GameSharing::wasGPGAvailableCalled = false;
 
 std::map<int,std::string> GameSharing::iosLeaderboardIds = std::map<int,std::string>();
 std::map<int,std::string> GameSharing::iosAchievementIds = std::map<int,std::string>();
+int GameSharing::numberOfAchievements = 0;
+int GameSharing::numberOfLeaderboards = 0;
 
 #endif
 
@@ -41,9 +43,11 @@ void GameSharing::initGameSharing(){
     ValueVector lIds = ids.at("Leaderboards").asValueVector();
     for (int i=0;i<aIds.size();i++) {
         iosAchievementIds[i] = aIds.at(i).asString();
+        numberOfAchievements=i+1;
     }
     for (int i=0;i<lIds.size();i++) {
         iosLeaderboardIds[i] = lIds.at(i).asString();
+        numberOfLeaderboards=i+1;
     }
     signInPlayer();
 #endif
@@ -63,7 +67,6 @@ void GameSharing::SubmitScore(int score,int leaderboardID)
             // Release
             t.env->DeleteLocalRef(t.classID);
         }
-        JniMethodInfo t;
         if (JniHelper::getStaticMethodInfo(t
                                            , "org/cocos2dx/cpp.AppActivity"
                                            , "submitScoreToLeaderboard"
@@ -93,7 +96,6 @@ void GameSharing::ShowLeaderboards(int id){
             // Release
             t.env->DeleteLocalRef(t.classID);
         }
-        JniMethodInfo t;
         if (JniHelper::getStaticMethodInfo(t
                                            , "org/cocos2dx/cpp.AppActivity"
                                            , "openLeaderboardUI"
