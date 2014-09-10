@@ -70,6 +70,10 @@ public:
     static std::map<int,std::string> iosLeaderboardIds;
     /**@brief Don't use this variable by yourself*/
     static std::map<int,std::string> iosAchievementIds;
+    /**@brief Number of Achievements used in this game*/
+    static int numberOfAchievements;
+    /**@brief Number of Leaderbaords used in this game*/
+    static int numberOfLeaderboards;
     
 #endif
     
