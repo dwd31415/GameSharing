@@ -1,5 +1,5 @@
 /*
-GameSharing.h
+GameCenterHelper.mm
 
 Copyright 2014 Adrian Dawid
 
