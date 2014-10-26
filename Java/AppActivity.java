@@ -124,6 +124,12 @@ public class AppActivity extends BaseGameActivity {
         }
     }
     
+    static public void exitGame()
+    {
+        Intent intent = new Intent(currentContext, MainActivity.class);
+        MainActivity.exiting=true;
+        currentContext.startActivity(intent);
+    }
 }
 
 
