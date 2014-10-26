@@ -196,3 +196,21 @@ bool GameSharing::IsGPGAvailable(){
     wasGPGAvailableCalled = true;
     return tmp;
 }
+
+
+void GameSharing::ExitGame(){
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t
+                                       , "org/cocos2dx/cpp.AppActivity"
+                                       , "exitGame"
+                                       , "()V"))
+    {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID);
+        // Release
+        t.env->DeleteLocalRef(t.classID);
+    }
+#else
+    Director::getInstance()->end();
+#endif
+}
