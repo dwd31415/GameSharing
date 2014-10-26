@@ -47,6 +47,8 @@ public:
     static void UnlockAchivement(int ID);
     /**@brief Shows the achievements window*/
     static void ShowAchievementsUI();
+    /**@brief Closes the game, don't use Director::end() with GameSharing*/
+    static void ExitGame();
     /**@brief Checks if GPG is available*/
     static bool IsGPGAvailable();
     /**@brief If the IsGPGAvailable method was called it is not requiered to call again.*/
