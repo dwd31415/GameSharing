@@ -21,6 +21,7 @@ Created by Adrian Dawid
 */
 package org.cocos2dx.cpp;
 
+
 import org.cocos2dx.lib.Cocos2dxActivity;
 import your.app.id.*;
 import android.os.Bundle;
@@ -33,11 +34,13 @@ import android.content.Intent;
 import android.app.Activity;
 
 public class MainActivity extends Activity{
+    public static boolean exiting = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!exiting)
+        {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-        
         if (resultCode == ConnectionResult.SUCCESS){
             Intent intent = new Intent(this, AppActivity.class);
             AppActivity.gpgAvailable = true;
@@ -47,6 +50,22 @@ public class MainActivity extends Activity{
             Intent intent = new Intent(this, NoGPGAppActivity.class);
             AppActivity.gpgAvailable = false;
             startActivity(intent);
+        }
+        }
+        else{
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(exiting)
+        {
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 }
