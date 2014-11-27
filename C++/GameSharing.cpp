@@ -64,8 +64,6 @@ void GameSharing::SubmitScore(int score,int leaderboardID)
                                            , "(I)V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID, leaderboardID);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
         if (JniHelper::getStaticMethodInfo(t
                                            , "org/cocos2dx/cpp.AppActivity"
@@ -73,8 +71,6 @@ void GameSharing::SubmitScore(int score,int leaderboardID)
                                            , "(I)V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID, score);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
     }
 #endif
@@ -93,8 +89,6 @@ void GameSharing::ShowLeaderboards(int id){
                                            , "(I)V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID, id);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
         if (JniHelper::getStaticMethodInfo(t
                                            , "org/cocos2dx/cpp.AppActivity"
@@ -102,8 +96,6 @@ void GameSharing::ShowLeaderboards(int id){
                                            , "()V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
     }
     else{
@@ -127,8 +119,6 @@ void GameSharing::UnlockAchivement(int ID)
                                            , "(I)V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID , ID);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
         JniMethodInfo tmp;
         if (JniHelper::getStaticMethodInfo(tmp
@@ -137,8 +127,6 @@ void GameSharing::UnlockAchivement(int ID)
                                            , "(I)V"))
         {
             tmp.env->CallStaticVoidMethod(tmp.classID, tmp.methodID , 100);
-            // Release
-            tmp.env->DeleteLocalRef(t.classID);
         }
     }
     else{
@@ -160,8 +148,6 @@ void GameSharing::ShowAchievementsUI(){
                                            , "()V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
     }
     else{
@@ -184,8 +170,6 @@ bool GameSharing::IsGPGAvailable(){
                                            , "()Z"))
         {
             tmp = t.env->CallStaticBooleanMethod(t.classID, t.methodID);
-            // Release
-            t.env->DeleteLocalRef(t.classID);
         }
 #endif
         bIsGPGAvailable = tmp;
@@ -207,8 +191,6 @@ void GameSharing::ExitGame(){
                                        , "()V"))
     {
         t.env->CallStaticVoidMethod(t.classID, t.methodID);
-        // Release
-        t.env->DeleteLocalRef(t.classID);
     }
 #else
     Director::getInstance()->end();
