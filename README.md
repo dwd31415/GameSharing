@@ -121,7 +121,9 @@ Then implement this function in GameCenterHelper.mm, bear in mind that you need 
 Roadmap
 =======
 
-https://trello.com/b/lqU4UZTi/gamesharing-roadmap
+Please take a look at this repro with waffle.io
+
+https://waffle.io/dwd31415/GameSharing
 
 
 
