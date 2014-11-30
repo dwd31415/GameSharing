@@ -20,12 +20,13 @@ Created by Adrian Dawid on 17.08.14.
 
 */
 
-#ifndef __PaperChase__GameSharing__
-#define __PaperChase__GameSharing__
+#ifndef __GameSharing__
+#define __GameSharing__
 
 #include <iostream>
 #include "cocos2d.h"
 #include <map>
+#include <functional>
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 #include "platform/android/jni/JniHelper.h"
@@ -51,11 +52,16 @@ public:
     static void ExitGame();
     /**@brief Checks if GPG is available*/
     static bool IsGPGAvailable();
+    /**@brief Sets the error handling method.*/
+    static void SetErrorHandler(std::function<void()> handler);
+    /**@brief Sets the error handling method.*/
+    static void ActivateStdErrorHandler();
     /**@brief If the IsGPGAvailable method was called it is not requiered to call again.*/
     static bool wasGPGAvailableCalled;
     /**@brief Return value of the IsGPGAvaiblable function.*/
     static bool bIsGPGAvailable;
-    
+    /**@brief A function, that shall be called when an error is encountered.*/
+    static std::function<void()> errorHandler;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     
     /**@brief This function opens the sign in ui, if needed or shows the "Welcome back:..." banner*/
@@ -82,4 +88,4 @@ public:
     
 };
 
-#endif /* defined(__PaperChase__GameSharing__) */
+#endif

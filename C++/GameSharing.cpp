@@ -51,6 +51,7 @@ void GameSharing::initGameSharing(){
     }
     signInPlayer();
 #endif
+    
 }
 
 void GameSharing::SubmitScore(int score,int leaderboardID)
@@ -64,6 +65,7 @@ void GameSharing::SubmitScore(int score,int leaderboardID)
                                            , "(I)V"))
         {
             t.env->CallStaticVoidMethod(t.classID, t.methodID, leaderboardID);
+            
         }
         if (JniHelper::getStaticMethodInfo(t
                                            , "org/cocos2dx/cpp.AppActivity"
@@ -99,7 +101,7 @@ void GameSharing::ShowLeaderboards(int id){
         }
     }
     else{
-        MessageBox("Google Play Games Services are not actvie.", "Error");
+        errorHandler();
     }
 #endif
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
@@ -130,7 +132,7 @@ void GameSharing::UnlockAchivement(int ID)
         }
     }
     else{
-        MessageBox("Google Play Games Services are not actvie.", "Error");
+        errorHandler();
     }
 #endif
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
@@ -151,7 +153,7 @@ void GameSharing::ShowAchievementsUI(){
         }
     }
     else{
-        MessageBox("Google Play Games Services are not actvie.", "Error");
+        errorHandler();
     }
 #endif
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
@@ -161,26 +163,18 @@ void GameSharing::ShowAchievementsUI(){
 
 bool GameSharing::IsGPGAvailable(){
     bool tmp = false;
-    if (!wasGPGAvailableCalled) {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
-        JniMethodInfo t;
-        if (JniHelper::getStaticMethodInfo(t
-                                           , "org/cocos2dx/cpp.AppActivity"
-                                           , "isGPGSupported"
-                                           , "()Z"))
-        {
-            tmp = t.env->CallStaticBooleanMethod(t.classID, t.methodID);
-        }
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t
+                                       , "org/cocos2dx/cpp.AppActivity"
+                                       , "isGPGSupported"
+                                       , "()Z"))
+    {
+        tmp = t.env->CallStaticBooleanMethod(t.classID, t.methodID);
+    }
 #endif
-        bIsGPGAvailable = tmp;
-    }
-    else{
-        tmp = bIsGPGAvailable;
-    }
-    wasGPGAvailableCalled = true;
     return tmp;
 }
-
 
 void GameSharing::ExitGame(){
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
@@ -195,4 +189,24 @@ void GameSharing::ExitGame(){
 #else
     Director::getInstance()->end();
 #endif
+}
+
+
+void GameSharing::ActivateStdErrorHandler(){
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+    SetErrorHandler([]() -> void{
+        MessageBox("A problem with Google Play Games was encounterd.", "Error");
+        return;
+    });
+#endif
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    SetErrorHandler([]() -> void{
+        MessageBox("A problem with Game Center was encounterd.", "Error");
+        return;
+    });
+#endif
+}
+
+void GameSharing::SetErrorHandler(std::function<void ()> handler){
+    errorHandler = handler;
 }
