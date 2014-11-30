@@ -73,7 +73,7 @@ If you want the "Done" buttons inside of the GameCenter UI to work you also need
 Is my project still compatible with other operating systems if I use GameSharing
 ===============================================================================
 
-Yes it is. The GameSharing class only compiles the Google Play Games relevant parts, if you compile for android.
+Yes it is. The GameSharing class only compiles the Google Play Games relevant parts, if you compile for android and only compiles GameCenter relevant parts for ios.
 On other operating system all methods just have no effect at all, but won't produce any compiler errors.
 
 How to extend GameSharing?
@@ -81,8 +81,7 @@ How to extend GameSharing?
 
 Android:
 
-If you want to add a feature to GameSharing and you know how to develop with the JNI(Java Natvie Interface), you can do 
-that. You just have to add a new static function to the AppActvity and write all GPGS code into it. Then add a new function to the GameSharing C++ class and add this code snipped to it:
+If you want to add a feature to GameSharing and you know how to develop with the JNI(Java Natvie Interface), you can do that. You just have to add a new static function to the AppActvity and write all GPGS code into it. Then add a new function to the GameSharing C++ class and add this code snipped to it:
 
 ```
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
