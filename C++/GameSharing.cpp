@@ -195,13 +195,13 @@ void GameSharing::ExitGame(){
 void GameSharing::ActivateStdErrorHandler(){
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
     SetErrorHandler([]() -> void{
-        MessageBox("A problem with Google Play Games was encounterd.", "Error");
+        MessageBox("A problem with Google Play Games was encountered.", "Error");
         return;
     });
 #endif
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     SetErrorHandler([]() -> void{
-        MessageBox("A problem with Game Center was encounterd.", "Error");
+        MessageBox("A problem with Game Center was encountered.", "Error");
         return;
     });
 #endif
