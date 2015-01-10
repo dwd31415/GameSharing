@@ -27,6 +27,7 @@ USING_NS_CC;
 
 bool GameSharing::bIsGPGAvailable = true;
 bool GameSharing::wasGPGAvailableCalled = false;
+std::function<void()> GameSharing::errorHandler;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 
 std::map<int,std::string> GameSharing::iosLeaderboardIds = std::map<int,std::string>();
