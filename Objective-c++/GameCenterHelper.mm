@@ -38,7 +38,7 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
             gkController.timeScope = GKLeaderboardTimeScopeAllTime;
             gkController.timeScope = GKLeaderboardTimeScopeToday;
-            gkController.leaderboardDelegate = appController.viewController;
+            gkController.leaderboardDelegate = appController;
             
             [appController.viewController presentModalViewController:gkController animated:YES];
         }
