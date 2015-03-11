@@ -2,6 +2,8 @@
 GameSharing
 ===========
 
+[![Join the chat at https://gitter.im/dwd31415/GameSharing](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dwd31415/GameSharing?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 GameSharing is C++ bridge to the Java Google Play Games Services SDK and Apples Game Center for cocos2d-X.
 You can use this features at the moment:
 * Submit scores to Leaderboards
