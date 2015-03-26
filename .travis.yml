@@ -4,8 +4,9 @@ node_js:
   
 before_install:
   - npm install -g docco
+  - cd C++
 script:
-  - docco *.cpp -o docs/annotated_source
+  - docco *.cpp -o ../docs/annotated_source
 after_success:
   - git config --global user.email "thisIs@BotItHasNo.email"
   - git config --global user.name "Travis-CI docca Bot"
