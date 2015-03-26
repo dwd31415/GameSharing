@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "0.12"
+  
+before_install:
+  - npm install -g docco
+script:
+  - docco *.cpp -o docs/annotated_source
+after_success:
+  - git config --global user.email "thisIs@BotItHasNo.email"
+  - git config --global user.name "Travis-CI docca Bot"
+  - git config --global push.default simple
+  - git commit docs/* -m "* Automated update of the annotated source."
+  - git push --force "https://${TOKEN}@${REPRO}" HEAD:master
