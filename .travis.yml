@@ -12,5 +12,6 @@ after_success:
   - git config --global user.email "thisIs@BotItHasNo.email"
   - git config --global user.name "Travis-CI docca Bot"
   - git config --global push.default simple
+  - git add docs/*
   - git commit docs/* -m "* Automated update of the annotated source."
   - git push --force "https://${TOKEN}@${REPRO}" HEAD:master
