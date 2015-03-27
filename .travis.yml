@@ -14,5 +14,5 @@ after_success:
   - git config --global push.default simple
   - git add docs/*
   - git commit docs/* -m "* Automated update of the annotated source."
-  - git push --force "https://${TOKEN}@${REPRO}" HEAD:master  > /dev/null 2>&1
-  - git push --force "https://${TOKEN}@${REPRO}" master:gh-pages > /dev/null 2>&1
+  - git push --force "https://${TOKEN}@${REPRO}" HEAD:master
+  - git push --force "https://${TOKEN}@${REPRO}" master:gh-pages
