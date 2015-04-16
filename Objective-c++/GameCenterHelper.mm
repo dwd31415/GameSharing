@@ -37,8 +37,7 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
             GKLeaderboardViewController* gkController = [[[GKLeaderboardViewController alloc] init] autorelease];
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
             gkController.timeScope = GKLeaderboardTimeScopeAllTime;
-            gkController.timeScope = GKLeaderboardTimeScopeToday;
-            gkController.leaderboardDelegate = appController;
+            gkController.leaderboardDelegate = appController.viewController;
             
             [appController.viewController presentModalViewController:gkController animated:YES];
         }
@@ -89,6 +88,36 @@ void GameSharing::unlockAchievement(int aId){
                     GameSharing::errorHandler();
                 }
             }];
+        }
+    }
+}
+
+void GameSharing::startScoreRequest(int leaderboardID)
+{
+    if(iosLeaderboardIds.size() >= leaderboardID){
+        if (![GKLocalPlayer localPlayer].isAuthenticated) {
+            signInPlayer();
+        }else{
+            GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
+            leaderboardRequest.identifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(leaderboardID).c_str()];
+            if (leaderboardRequest != nil) {
+                [leaderboardRequest loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error){
+                    if (error != nil) {
+                        NSLog(@"The score could not be requested.");
+                        GameSharing::localPlayerScore = -1;
+                    }
+                    else{
+                        auto highestScore = leaderboardRequest.localPlayerScore;
+                        GameSharing::localPlayerScore = int(highestScore.value);
+                        GameSharing::requestIsBeingProcessed = false;
+                        if(GameSharing::requestCallback)
+                        {
+                            NSLog(@"Calling Callback");
+                            GameSharing::requestCallback();
+                        }
+                    }
+                }];
+            }
         }
     }
 }
