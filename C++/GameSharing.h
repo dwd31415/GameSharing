@@ -19,7 +19,6 @@ limitations under the License.
 Created by Adrian Dawid on 17.08.14.
 
 */
-
 #ifndef __GameSharing__
 #define __GameSharing__
 
@@ -62,12 +61,21 @@ public:
     static bool bIsGPGAvailable;
     /**@brief A function, that shall be called when an error is encountered.*/
     static std::function<void()> errorHandler;
+    /**@brief Requests the current score from the leaderboard*/
+    static void RequestCurrentScoreFromLeaderboard(int leaderboardID,std::function<void()> callback = NULL);
+    /**@brief The score of the current player, THIS VALUE IS ONLY SET ONCE RequestCurrentScoreFromLeaderboard WAS CALLED.*/
+    static int localPlayerScore;
+    /**@brief Is the request being processed? If the process failed, the localPlayerScore is -1.*/
+    static bool requestIsBeingProcessed;
+    /**@brief The callback of the score request, it will be called on the main thread*/
+    static std::function<void()> requestCallback;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-    
     /**@brief This function opens the sign in ui, if needed or shows the "Welcome back:..." banner*/
     static bool signInPlayer();
     /**@brief Don't call this function by yourself*/
     static void openGameCenterLeaderboardsUI(int leaderboardID);
+    /**@brief Don't call this function by yourself*/
+    static void startScoreRequest(int leaderboardID);
     /**@brief Don't call this function by yourself*/
     static void submitScoreToLeaderboard(int score,int leaderboardID);
     /**@brief Don't call this function by yourself*/
