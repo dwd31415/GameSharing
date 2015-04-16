@@ -59,11 +59,11 @@ USING_NS_CC;
 
 <span class="hljs-keyword">bool</span> GameSharing::bIsGPGAvailable = <span class="hljs-keyword">true</span>;
 <span class="hljs-keyword">bool</span> GameSharing::wasGPGAvailableCalled = <span class="hljs-keyword">false</span>;
-std::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::errorHandler;
+<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::errorHandler;
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
 
-std::<span class="hljs-stl_container"><span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;</span> GameSharing::iosLeaderboardIds = std::<span class="hljs-stl_container"><span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;</span>();
-std::<span class="hljs-stl_container"><span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;</span> GameSharing::iosAchievementIds = std::<span class="hljs-stl_container"><span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;</span>();
+<span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosLeaderboardIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
+<span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosAchievementIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
 <span class="hljs-keyword">int</span> GameSharing::numberOfAchievements = <span class="hljs-number">0</span>;
 <span class="hljs-keyword">int</span> GameSharing::numberOfLeaderboards = <span class="hljs-number">0</span>;
 
@@ -586,7 +586,7 @@ Can the Google Play API be used?</p>
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
 }
 
-<span class="hljs-keyword">void</span> GameSharing::SetErrorHandler(std::function&lt;<span class="hljs-keyword">void</span> ()&gt; handler){
+<span class="hljs-keyword">void</span> GameSharing::SetErrorHandler(<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span> ()&gt; handler){
     errorHandler = handler;
 }</pre></div></div>
             
