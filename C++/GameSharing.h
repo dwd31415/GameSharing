@@ -61,7 +61,7 @@ public:
     static bool bIsGPGAvailable;
     /**@brief A function, that shall be called when an error is encountered.*/
     static std::function<void()> errorHandler;
-    /**@brief Requests the current score from the leaderboard*/
+    /**@brief Requests the current score from the leaderboard, if the 2nd argument is specified, the function pointer will be called once the request was answered.*/
     static void RequestCurrentScoreFromLeaderboard(int leaderboardID,std::function<void()> callback = NULL);
     /**@brief The score of the current player, THIS VALUE IS ONLY SET ONCE RequestCurrentScoreFromLeaderboard WAS CALLED.*/
     static int localPlayerScore;
