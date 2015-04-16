@@ -31,26 +31,19 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*
-GameSharing.cpp
-
-Copyright 2014 Adrian Dawid
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-
-Created by Adrian Dawid on 17.08.14.
-
-*/</span>
+ GameSharing.cpp
+ Copyright 2014 Adrian Dawid
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ Created by Adrian Dawid on 17.08.14.
+ */</span>
 
 
 <span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> "GameSharing.h"</span>
@@ -60,8 +53,11 @@ USING_NS_CC;
 <span class="hljs-keyword">bool</span> GameSharing::bIsGPGAvailable = <span class="hljs-keyword">true</span>;
 <span class="hljs-keyword">bool</span> GameSharing::wasGPGAvailableCalled = <span class="hljs-keyword">false</span>;
 <span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::errorHandler;
-<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+<span class="hljs-keyword">int</span> GameSharing::localPlayerScore = -<span class="hljs-number">1</span>;
+<span class="hljs-keyword">bool</span> GameSharing::requestIsBeingProcessed = <span class="hljs-keyword">false</span>;
+<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::requestCallback;
 
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
 <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosLeaderboardIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
 <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosAchievementIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
 <span class="hljs-keyword">int</span> GameSharing::numberOfAchievements = <span class="hljs-number">0</span>;
@@ -584,6 +580,18 @@ Can the Google Play API be used?</p>
         <span class="hljs-keyword">return</span>;
     });
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">void</span> GameSharing::RequestCurrentScoreFromLeaderboard(<span class="hljs-keyword">int</span> leaderboardID,<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; callback)
+{
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+    GameSharing::startScoreRequest(leaderboardID);
+    requestIsBeingProcessed = <span class="hljs-keyword">true</span>;
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+    <span class="hljs-keyword">if</span>(callback)
+    {
+        requestCallback = callback;
+    }
 }
 
 <span class="hljs-keyword">void</span> GameSharing::SetErrorHandler(<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span> ()&gt; handler){
