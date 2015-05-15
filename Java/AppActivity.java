@@ -30,13 +30,20 @@ package org.cocos2dx.cpp;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import your.app.id.*;
 import android.os.Bundle;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Games.*;
 import android.content.Context;
 import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+
 import android.content.Intent;
 import android.app.Activity;
+import android.util.Log;
 
 public class AppActivity extends BaseGameActivity {
     static int currentID;
@@ -97,8 +104,27 @@ public class AppActivity extends BaseGameActivity {
     {
         if(gpgAvailable){
         Games.Leaderboards.submitScore(((AppActivity)currentContext).getGameHelper().getApiClient(),leaderboardIDs[currentID],score);
-        updateAchievement(100);
         }
+    }
+    
+    static public void requestScoreFromLeaderboard()
+    {
+        if(gpgAvailable){
+            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(((AppActivity)currentContext).getGameHelper().getApiClient(), leaderboardIDs[currentID], LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC).setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(final Leaderboards.LoadPlayerScoreResult scoreResult) {
+                    if (scoreResult.getStatus().getStatusCode() == GamesStatusCodes.STATUS_OK) {
+                        AppActivity.currentScore = (int)scoreResult.getScore().getRawScore();
+                        AppActivity.callCppCallback();
+                    }
+                }
+            });
+        }
+    }
+
+    static public int collectScore()
+    {
+        return AppActivity.currentScore;
     }
     
      /*@brief Shows the achievements ui*/
