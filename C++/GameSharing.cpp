@@ -40,6 +40,35 @@ int GameSharing::numberOfLeaderboards = 0;
 
 #endif
 
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+extern "C"
+{
+    JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_AppActivity_callCppCallback(JNIEnv* env, jobject thiz);
+
+};
+
+JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_AppActivity_callCppCallback(JNIEnv* env, jobject thiz)
+{
+    int newScore = 0;
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t
+                                     , "org/cocos2dx/cpp.AppActivity"
+                                     , "collectScore"
+                                     , "()I"))
+    {
+        newScore = t.env->CallStaticIntMethod(t.classID, t.methodID);
+    }
+    GameSharing::localPlayerScore = newScore;
+    GameSharing::requestIsBeingProcessed = false;
+    if(GameSharing::requestCallback)
+    {
+          GameSharing::requestCallback();
+    }
+
+}
+#endif
+
+
 void GameSharing::initGameSharing(){
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     //iOS only:
@@ -249,6 +278,17 @@ void GameSharing::RequestCurrentScoreFromLeaderboard(int leaderboardID,std::func
 {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     GameSharing::startScoreRequest(leaderboardID);
+    requestIsBeingProcessed = true;
+#endif
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+    JniMethodInfo t;
+    if (JniHelper::getStaticMethodInfo(t
+                                   , "org/cocos2dx/cpp.AppActivity"
+                                   , "requestScoreFromLeaderboard"
+                                   , "()V"))
+    {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID);
+    }
     requestIsBeingProcessed = true;
 #endif
     if(callback)
