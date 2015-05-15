@@ -72,6 +72,35 @@ USING_NS_CC;
 
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
 
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
+<span class="hljs-keyword">extern</span> <span class="hljs-string">"C"</span>
+{
+    <span class="hljs-function">JNIEXPORT <span class="hljs-keyword">void</span> JNICALL <span class="hljs-title">Java_org_cocos2dx_cpp_AppActivity_callCppCallback</span><span class="hljs-params">(JNIEnv* env, jobject thiz)</span></span>;
+
+};
+
+<span class="hljs-function">JNIEXPORT <span class="hljs-keyword">void</span> JNICALL <span class="hljs-title">Java_org_cocos2dx_cpp_AppActivity_callCppCallback</span><span class="hljs-params">(JNIEnv* env, jobject thiz)</span>
+</span>{
+    <span class="hljs-keyword">int</span> newScore = <span class="hljs-number">0</span>;
+    JniMethodInfo t;
+    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                     , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                     , <span class="hljs-string">"collectScore"</span>
+                                     , <span class="hljs-string">"()I"</span>))
+    {
+        newScore = t.env-&gt;CallStaticIntMethod(t.classID, t.methodID);
+    }
+    GameSharing::localPlayerScore = newScore;
+    GameSharing::requestIsBeingProcessed = <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">if</span>(GameSharing::requestCallback)
+    {
+          GameSharing::requestCallback();
+    }
+
+}
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+
+
 <span class="hljs-keyword">void</span> GameSharing::initGameSharing(){
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span></pre></div></div>
             
@@ -593,6 +622,17 @@ Can the Google Play API be used?</p>
 {
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
     GameSharing::startScoreRequest(leaderboardID);
+    requestIsBeingProcessed = <span class="hljs-keyword">true</span>;
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
+    JniMethodInfo t;
+    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                   , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                   , <span class="hljs-string">"requestScoreFromLeaderboard"</span>
+                                   , <span class="hljs-string">"()V"</span>))
+    {
+        t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
+    }
     requestIsBeingProcessed = <span class="hljs-keyword">true</span>;
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
     <span class="hljs-keyword">if</span>(callback)
