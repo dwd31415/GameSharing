@@ -53,15 +53,15 @@
 
 
 
-<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> "GameSharing.h"</span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">"GameSharing.h"</span></span>
 
 USING_NS_CC;
 
-<span class="hljs-keyword">bool</span> GameSharing::bIsGPGAvailable = <span class="hljs-keyword">true</span>;
-<span class="hljs-keyword">bool</span> GameSharing::wasGPGAvailableCalled = <span class="hljs-keyword">false</span>;
+<span class="hljs-keyword">bool</span> GameSharing::bIsGPGAvailable = <span class="hljs-literal">true</span>;
+<span class="hljs-keyword">bool</span> GameSharing::wasGPGAvailableCalled = <span class="hljs-literal">false</span>;
 <span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::errorHandler;
 <span class="hljs-keyword">int</span> GameSharing::localPlayerScore = -<span class="hljs-number">1</span>;
-<span class="hljs-keyword">bool</span> GameSharing::requestIsBeingProcessed = <span class="hljs-keyword">false</span>;
+<span class="hljs-keyword">bool</span> GameSharing::requestIsBeingProcessed = <span class="hljs-literal">false</span>;
 <span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::requestCallback;
 
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
@@ -91,7 +91,7 @@ USING_NS_CC;
         newScore = t.env-&gt;CallStaticIntMethod(t.classID, t.methodID);
     }
     GameSharing::localPlayerScore = newScore;
-    GameSharing::requestIsBeingProcessed = <span class="hljs-keyword">false</span>;
+    GameSharing::requestIsBeingProcessed = <span class="hljs-literal">false</span>;
     <span class="hljs-keyword">if</span>(GameSharing::requestCallback)
     {
           GameSharing::requestCallback();
@@ -528,7 +528,7 @@ Can the Google Play API be used?</p>
 }
 
 <span class="hljs-keyword">bool</span> GameSharing::IsGPGAvailable(){
-    <span class="hljs-keyword">bool</span> tmp = <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">bool</span> tmp = <span class="hljs-literal">false</span>;
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
             
         </li>
@@ -622,7 +622,7 @@ Can the Google Play API be used?</p>
 {
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
     GameSharing::startScoreRequest(leaderboardID);
-    requestIsBeingProcessed = <span class="hljs-keyword">true</span>;
+    requestIsBeingProcessed = <span class="hljs-literal">true</span>;
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
 <span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
     JniMethodInfo t;
@@ -633,7 +633,7 @@ Can the Google Play API be used?</p>
     {
         t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
     }
-    requestIsBeingProcessed = <span class="hljs-keyword">true</span>;
+    requestIsBeingProcessed = <span class="hljs-literal">true</span>;
 <span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
     <span class="hljs-keyword">if</span>(callback)
     {
