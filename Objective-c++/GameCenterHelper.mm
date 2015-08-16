@@ -28,17 +28,20 @@ Created by Adrian Dawid on 17.08.14.
 void GameSharing::openGameCenterLeaderboardsUI(int lId){
     NSLog(@"Open Leaderboard UI");
     if(iosLeaderboardIds.size() >= lId){
-        if (![GKLocalPlayer localPlayer].isAuthenticated) {
-            signInPlayer();
-        }else{
-            
+    if (![GKLocalPlayer localPlayer].isAuthenticated) {
+        if(!signInPlayer())
+        {
+            GameSharing::errorHandler();
+        }
+    }else{
+    
             AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
-            
+    
             GKLeaderboardViewController* gkController = [[[GKLeaderboardViewController alloc] init] autorelease];
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
             gkController.timeScope = GKLeaderboardTimeScopeAllTime;
             gkController.leaderboardDelegate = appController.viewController;
-            
+        
             [appController.viewController presentModalViewController:gkController animated:YES];
         }
     }
@@ -48,14 +51,17 @@ void GameSharing::openAchievementUI(){
     NSLog(@"Open Achievements UI");
     
     if (![GKLocalPlayer localPlayer].isAuthenticated) {
-        signInPlayer();
+        if(!signInPlayer())
+        {
+            GameSharing::errorHandler();
+        }
     }else{
         
         AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
-        
+            
         GKAchievementViewController* gkController = [[[GKAchievementViewController alloc] init] autorelease];
         gkController.achievementDelegate = appController;
-        
+            
         [appController.viewController presentModalViewController:gkController animated:YES];
     }
 }
@@ -65,7 +71,7 @@ void GameSharing::submitScoreToLeaderboard(int score, int lId){
         GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier: [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()]];
         scoreReporter.value = score;
         scoreReporter.context = 0;
-        
+    
         [GKScore reportScores:@[scoreReporter] withCompletionHandler:^(NSError *error) {
             if (error != nil) {
                 NSLog(@"Error");
@@ -125,9 +131,9 @@ void GameSharing::startScoreRequest(int leaderboardID)
 bool GameSharing::signInPlayer(){
     GKLocalPlayer *player = [GKLocalPlayer localPlayer];
     bool signedIn=false;
-    [player authenticateWithCompletionHandler:^(NSError *error) {
-        //Just relax and do nothing
-    }];
+    player.authenticateHandler = ^(UIViewController *viewController, NSError *error){
+        //Do nothing, for nothing has to be done.
+    };
     if (player.isAuthenticated) {
         signedIn = true;
     }
