@@ -54,6 +54,8 @@ public class AppActivity extends BaseGameActivity {
     static String[] achievementIDs;
     static Context currentContext;
     
+    public static native void callCppCallback();
+    
     @Override
     public void onSignInSucceeded(){
         gpgAvailable = true;
