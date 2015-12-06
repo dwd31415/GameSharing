@@ -31,7 +31,10 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
     if (![GKLocalPlayer localPlayer].isAuthenticated) {
         if(!signInPlayer())
         {
-            GameSharing::errorHandler();
+            NSLog(@"Cannot open Leaderboard UI. Not logged in.");
+            if (GameSharing::errorHandler != nullptr) {
+                GameSharing::errorHandler();
+            }
         }
     }else{
     
@@ -40,7 +43,7 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
             GKLeaderboardViewController* gkController = [[[GKLeaderboardViewController alloc] init] autorelease];
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
             gkController.timeScope = GKLeaderboardTimeScopeAllTime;
-            gkController.leaderboardDelegate = appController.viewController;
+            gkController.leaderboardDelegate = appController;
         
             [appController.viewController presentModalViewController:gkController animated:YES];
         }
@@ -53,7 +56,10 @@ void GameSharing::openAchievementUI(){
     if (![GKLocalPlayer localPlayer].isAuthenticated) {
         if(!signInPlayer())
         {
-            GameSharing::errorHandler();
+            NSLog(@"Cannot open Achievements UI. Not logged in.");
+            if (GameSharing::errorHandler != nullptr) {
+                GameSharing::errorHandler();
+            }
         }
     }else{
         
@@ -74,8 +80,10 @@ void GameSharing::submitScoreToLeaderboard(int score, int lId){
     
         [GKScore reportScores:@[scoreReporter] withCompletionHandler:^(NSError *error) {
             if (error != nil) {
-                NSLog(@"Error");
-                GameSharing::errorHandler();
+                NSLog(@"Error at GameSharing::submitScoreToLeaderboard()");
+                if (GameSharing::errorHandler != nullptr) {
+                    GameSharing::errorHandler();
+                }
             }
         }];
     }
@@ -91,7 +99,9 @@ void GameSharing::unlockAchievement(int aId){
             [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError *error) {
                 if (error != nil) {
                     NSLog(@"Error at GameSharing::unlockAchievement()");
-                    GameSharing::errorHandler();
+                    if (GameSharing::errorHandler != nullptr) {
+                        GameSharing::errorHandler();
+                    }
                 }
             }];
         }
