@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>GameSharing.cpp</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>GameSharing.cpp</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*
+ GameSharing.cpp
+ 
+ Copyright 2015 Adrian Dawid
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ 
+ Created by Adrian Dawid on 17.08.14.
+ */</span>
+
+
+
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">"GameSharing.h"</span></span>
+
+USING_NS_CC;
+
+<span class="hljs-keyword">bool</span> GameSharing::bIsGPGAvailable = <span class="hljs-literal">true</span>;
+<span class="hljs-keyword">bool</span> GameSharing::wasGPGAvailableCalled = <span class="hljs-literal">false</span>;
+<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::errorHandler;
+<span class="hljs-keyword">int</span> GameSharing::localPlayerScore = -<span class="hljs-number">1</span>;
+<span class="hljs-keyword">bool</span> GameSharing::requestIsBeingProcessed = <span class="hljs-literal">false</span>;
+<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; GameSharing::requestCallback;
+
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+<span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosLeaderboardIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
+<span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt; GameSharing::iosAchievementIds = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">map</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;();
+<span class="hljs-keyword">int</span> GameSharing::numberOfAchievements = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> GameSharing::numberOfLeaderboards = <span class="hljs-number">0</span>;
+
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
+<span class="hljs-keyword">extern</span> <span class="hljs-string">"C"</span>
+{
+    <span class="hljs-function">JNIEXPORT <span class="hljs-keyword">void</span> JNICALL <span class="hljs-title">Java_org_cocos2dx_cpp_AppActivity_callCppCallback</span><span class="hljs-params">(JNIEnv* env, jobject thiz)</span></span>;
+
+};
+
+<span class="hljs-function">JNIEXPORT <span class="hljs-keyword">void</span> JNICALL <span class="hljs-title">Java_org_cocos2dx_cpp_AppActivity_callCppCallback</span><span class="hljs-params">(JNIEnv* env, jobject thiz)</span>
+</span>{
+    <span class="hljs-keyword">int</span> newScore = <span class="hljs-number">0</span>;
+    JniMethodInfo t;
+    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                     , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                     , <span class="hljs-string">"collectScore"</span>
+                                     , <span class="hljs-string">"()I"</span>))
+    {
+        newScore = t.env-&gt;CallStaticIntMethod(t.classID, t.methodID);
+    }
+    GameSharing::localPlayerScore = newScore;
+    GameSharing::requestIsBeingProcessed = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">if</span>(GameSharing::requestCallback)
+    {
+          GameSharing::requestCallback();
+    }
+
+}
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+
+
+<span class="hljs-keyword">void</span> GameSharing::initGameSharing(){
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>iOS only:
+Load the data from ios_ids.plist.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ValueMap ids = FileUtils::getInstance()-&gt;getValueMapFromFile(<span class="hljs-string">"ios_ids.plist"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Request the “Achievements” vector from the file.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ValueVector aIds = ids.at(<span class="hljs-string">"Achievements"</span>).asValueVector();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Request the “Leaderboards” vector from the file.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ValueVector lIds = ids.at(<span class="hljs-string">"Leaderboards"</span>).asValueVector();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;aIds.size();i++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Copy the achievement IDs for later use.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        iosAchievementIds[i] = aIds.at(i).asString();
+        numberOfAchievements=i+<span class="hljs-number">1</span>;
+    }
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;lIds.size();i++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Copy the leaderboard IDs for later use.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        iosLeaderboardIds[i] = lIds.at(i).asString();
+        numberOfLeaderboards=i+<span class="hljs-number">1</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Show the “Sign In” window.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    signInPlayer();
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+    
+}
+
+<span class="hljs-keyword">void</span> GameSharing::SubmitScore(<span class="hljs-keyword">int</span> score,<span class="hljs-keyword">int</span> leaderboardID)
+{
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(IsGPGAvailable()){
+        JniMethodInfo t;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Is the Java method org.cocos2dx.cpp.AppActivty.openLeaderboard available?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"openLeaderboard"</span>
+                                           , <span class="hljs-string">"(I)V"</span>))
+        {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Call the method with the leaderboardID as parameter</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID, leaderboardID);
+            
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Is the Java method org.cocos2dx.cpp.AppActivty.submitScoreToLeaderboard available?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"submitScoreToLeaderboard"</span>
+                                           , <span class="hljs-string">"(I)V"</span>))
+        {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Call the method, this actually uploads the score to the leaderboard.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID, score);
+        }
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>iOS only:
+Call the submit Score function (implemented in Objective-C++).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    submitScoreToLeaderboard(score,leaderboardID);
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">void</span> GameSharing::ShowLeaderboards(<span class="hljs-keyword">int</span> id){
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(IsGPGAvailable()){
+        JniMethodInfo t;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Is the Java method org.cocos2dx.cpp.AppActivty.openLeaderboard available?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"openLeaderboard"</span>
+                                           , <span class="hljs-string">"(I)V"</span>))
+        {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Call the method, over the JNI.
+This changes the current leaderboard ID to id.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID, id);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Is the Java method org.cocos2dx.cpp.AppActivty.openLeaderboardUI available?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"openLeaderboardUI"</span>
+                                           , <span class="hljs-string">"()V"</span>))
+        {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Call the method, this actually shows the UI.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
+        }
+    }
+    <span class="hljs-keyword">else</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Call the user defined error handler.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        errorHandler();
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Call the Objective-c++ code.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    openGameCenterLeaderboardsUI(id);
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">void</span> GameSharing::UnlockAchivement(<span class="hljs-keyword">int</span> ID)
+{
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(IsGPGAvailable())
+    {
+        JniMethodInfo t;
+        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"openAchievement"</span>
+                                           , <span class="hljs-string">"(I)V"</span>))
+        {
+            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID , ID);
+        }
+        JniMethodInfo tmp;
+        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(tmp
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"updateAchievement"</span>
+                                           , <span class="hljs-string">"(I)V"</span>))
+        {
+            tmp.env-&gt;CallStaticVoidMethod(tmp.classID, tmp.methodID , <span class="hljs-number">100</span>);
+        }
+    }
+    <span class="hljs-keyword">else</span>{
+        errorHandler();
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+    unlockAchievement(ID);
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">void</span> GameSharing::ShowAchievementsUI(){
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(IsGPGAvailable()){
+        JniMethodInfo t;
+        <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                           , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                           , <span class="hljs-string">"showAchievements"</span>
+                                           , <span class="hljs-string">"()V"</span>))
+        {
+            t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
+        }
+    }
+    <span class="hljs-keyword">else</span>{
+        errorHandler();
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+    openAchievementUI();
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">bool</span> GameSharing::IsGPGAvailable(){
+    <span class="hljs-keyword">bool</span> tmp = <span class="hljs-literal">false</span>;
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    JniMethodInfo t;
+    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                       , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                       , <span class="hljs-string">"isGPGSupported"</span>
+                                       , <span class="hljs-string">"()Z"</span>))
+    {
+        tmp = t.env-&gt;CallStaticBooleanMethod(t.classID, t.methodID);
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+    <span class="hljs-keyword">return</span> tmp;
+}
+
+<span class="hljs-keyword">void</span> GameSharing::ExitGame(){
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
+    JniMethodInfo t;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                       , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                       , <span class="hljs-string">"exitGame"</span>
+                                       , <span class="hljs-string">"()V"</span>))
+    {
+        t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
+    }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">else</span></span>
+    Director::getInstance()-&gt;end();
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+
+<span class="hljs-keyword">void</span> GameSharing::ActivateStdErrorHandler(){
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Android only:
+Can the Google Play API be used?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    SetErrorHandler([]() -&gt; <span class="hljs-keyword">void</span>{
+        MessageBox(<span class="hljs-string">"A problem with Google Play Games was encountered."</span>, <span class="hljs-string">"Error"</span>);
+        <span class="hljs-keyword">return</span>;
+    });
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+    SetErrorHandler([]() -&gt; <span class="hljs-keyword">void</span>{
+        MessageBox(<span class="hljs-string">"A problem with Game Center was encountered."</span>, <span class="hljs-string">"Error"</span>);
+        <span class="hljs-keyword">return</span>;
+    });
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+}
+
+<span class="hljs-keyword">void</span> GameSharing::RequestCurrentScoreFromLeaderboard(<span class="hljs-keyword">int</span> leaderboardID,<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span>()&gt; callback)
+{
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_IOS</span>
+    GameSharing::startScoreRequest(leaderboardID);
+    requestIsBeingProcessed = <span class="hljs-literal">true</span>;
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID</span>
+    JniMethodInfo t;
+    <span class="hljs-keyword">if</span> (JniHelper::getStaticMethodInfo(t
+                                   , <span class="hljs-string">"org/cocos2dx/cpp.AppActivity"</span>
+                                   , <span class="hljs-string">"requestScoreFromLeaderboard"</span>
+                                   , <span class="hljs-string">"()V"</span>))
+    {
+        t.env-&gt;CallStaticVoidMethod(t.classID, t.methodID);
+    }
+    requestIsBeingProcessed = <span class="hljs-literal">true</span>;
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+    <span class="hljs-keyword">if</span>(callback)
+    {
+        requestCallback = callback;
+    }
+}
+
+<span class="hljs-keyword">void</span> GameSharing::SetErrorHandler(<span class="hljs-built_in">std</span>::function&lt;<span class="hljs-keyword">void</span> ()&gt; handler){
+    errorHandler = handler;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
