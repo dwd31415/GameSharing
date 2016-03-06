@@ -40,12 +40,12 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
     
             AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
     
-            GKLeaderboardViewController* gkController = [[[GKLeaderboardViewController alloc] init] autorelease];
+            GKGameCenterViewController* gkController = [[[GKGameCenterViewController alloc] init] autorelease];
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
-            gkController.timeScope = GKLeaderboardTimeScopeAllTime;
-            gkController.leaderboardDelegate = appController;
+            gkController.leaderboardTimeScope = GKLeaderboardTimeScopeAllTime;
+            gkController.gameCenterDelegate = appController;
         
-            [appController.viewController presentModalViewController:gkController animated:YES];
+        [appController.viewController presentViewController:gkController animated:YES completion:nil];
         }
     }
 }
@@ -64,11 +64,11 @@ void GameSharing::openAchievementUI(){
     }else{
         
         AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
-            
-        GKAchievementViewController* gkController = [[[GKAchievementViewController alloc] init] autorelease];
-        gkController.achievementDelegate = appController;
-            
-        [appController.viewController presentModalViewController:gkController animated:YES];
+        
+        GKGameCenterViewController* gkController = [[[GKGameCenterViewController alloc] init] autorelease];
+        gkController.gameCenterDelegate = appController;
+        
+        [appController.viewController presentViewController:gkController animated:YES completion: nil];
     }
 }
 
