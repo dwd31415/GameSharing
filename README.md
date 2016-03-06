@@ -45,7 +45,7 @@ Then you must change the class definition of AppController to this:
 #import <GameKit/GameKit.h>
 #import "RootViewController.h"
 
-@interface AppController : NSObject <UIApplicationDelegate,GKLeaderboardViewControllerDelegate,GKAchievementViewControllerDelegate> {
+@interface AppController : NSObject <UIApplicationDelegate, GKGameCenterControllerDelegate>{
     UIWindow *window;
 }
 @property(nonatomic, readonly) RootViewController* viewController;
@@ -59,17 +59,11 @@ If you want the "Done" buttons inside of the GameCenter UI to work you also need
 
 
 ```
-- (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController
 {
     AppController* delegate = (AppController*) [UIApplication sharedApplication].delegate;
-    [delegate.viewController dismissModalViewControllerAnimated:YES];
+    [delegate.viewController dismissViewControllerAnimated:YES completion:nil];
     
-}
-
--(void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController
-{
-    AppController* delegate = (AppController*) [UIApplication sharedApplication].delegate;
-    [delegate.viewController dismissModalViewControllerAnimated:YES];
 }
 ```
 
