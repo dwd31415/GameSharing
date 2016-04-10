@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_AppActivity_callCppCallback(JNIEnv*
 #endif
 
 
-void GameSharing::initGameSharing(){
+void GameSharing::initGameSharing(void *initObj){
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
     //iOS only:
     //Load the data from ios_ids.plist.
@@ -90,6 +90,8 @@ void GameSharing::initGameSharing(){
     }
     //Show the "Sign In" window.
     signInPlayer();
+
+    initGameSharing_iOS(initObj);
 #endif
     
 }
