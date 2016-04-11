@@ -36,8 +36,9 @@ For more information please take a look at the wiki.
 
 iOS:
 
-To use GameSharing on iOS copy the C++ folder into your Classes folder
+To use GameSharing on iOS, copy the C++ folder into your Classes folder
 and add all files inside of the Objetive-C++ folder to your iOS Project.
+
 Then you must change the AppController.mm file like this:
 
 ```
@@ -52,6 +53,19 @@ Then you must change the AppController.mm file like this:
 }
 
 ```
+
+On iOS you must create a ios_ids.plist file in your Resources folder, to store your ids. 
+Create two keys in it:"Achievements" and "Leaderboards" set their type to array and then 
+add all your ids to the right category, then use there indexes in the array in your c++ code:
+
+```
+// Unlocks the first achievement in your list
+GameSharing::UnlockAchivement(0);
+
+// Unlocks the fifth achievement in your list
+GameSharing::UnlockAchivement(4);
+```
+
 
 Is my project still compatible with other operating systems if I use GameSharing
 ===============================================================================
