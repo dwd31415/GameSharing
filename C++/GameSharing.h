@@ -37,7 +37,7 @@ class GameSharing{
 public:
     /**@brief This function must be called on iOS, for it calls the signInPlayer() function,
      it has no effect on android, so don't call it if your app only runs on android*/
-    static void initGameSharing();
+    static void initGameSharing(void *initObj);
     /**@brief This method submits a score to the current leaderboard*/
     static void SubmitScore(int score,int leaderboardId = 0);
     /**@brief This method opens the leaderboards UI for the current board*/
@@ -70,6 +70,7 @@ public:
     /**@brief The callback of the score request, it will be called on the main thread*/
     static std::function<void()> requestCallback;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    static void initGameSharing_iOS(void *initObj);
     /**@brief This function opens the sign in ui, if needed or shows the "Welcome back:..." banner*/
     static bool signInPlayer();
     /**@brief Don't call this function by yourself*/

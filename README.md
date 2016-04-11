@@ -36,35 +36,34 @@ For more information please take a look at the wiki.
 
 iOS:
 
-To use GameSharing on iOS copy the C++ folder into your Classes folder
+To use GameSharing on iOS, copy the C++ folder into your Classes folder
 and add all files inside of the Objetive-C++ folder to your iOS Project.
-Then you must change the class definition of AppController to this:
+
+Then you must change the AppController.mm file like this:
 
 ```
-#import <UIKit/UIKit.h>
-#import <GameKit/GameKit.h>
-#import "RootViewController.h"
+#include "GameSharing.h"
 
-@interface AppController : NSObject <UIApplicationDelegate, GKGameCenterControllerDelegate>{
-    UIWindow *window;
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    window.rootViewController = rootViewController;
+
+    GameSharing::initGameSharing((__bridge void *)rootViewController);
+
 }
-@property(nonatomic, readonly) RootViewController* viewController;
-
-@end
-
 
 ```
 
-If you want the "Done" buttons inside of the GameCenter UI to work you also need to add this code to the  AppController.mm file:
-
+On iOS you must create a ios_ids.plist file in your Resources folder, to store your ids. 
+Create two keys in it:"Achievements" and "Leaderboards" set their type to array and then 
+add all your ids to the right category, then use there indexes in the array in your c++ code:
 
 ```
-- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController
-{
-    AppController* delegate = (AppController*) [UIApplication sharedApplication].delegate;
-    [delegate.viewController dismissViewControllerAnimated:YES completion:nil];
-    
-}
+// Unlocks the first achievement in your list
+GameSharing::UnlockAchivement(0);
+
+// Unlocks the fifth achievement in your list
+GameSharing::UnlockAchivement(4);
 ```
 
 
