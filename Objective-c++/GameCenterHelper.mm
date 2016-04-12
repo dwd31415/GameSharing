@@ -19,7 +19,7 @@
 #import <GameKit/GameKit.h>
 
 @interface GameCenterDelegate : NSObject<GKGameCenterControllerDelegate>
-@property(nonatomic, weak) UIViewController *viewController;
+@property(nonatomic, assign) UIViewController *viewController;
 @end
 
 @implementation GameCenterDelegate
@@ -32,6 +32,9 @@
     static GameCenterDelegate *gameCenterDelegate = nil;
     if (gameCenterDelegate == nil) {
         gameCenterDelegate = [[GameCenterDelegate alloc] init];
+#if !__has_feature(objc_arc)
+        [gameCenterDelegate autorelease];
+#endif
     }
     return gameCenterDelegate;
 }
@@ -40,7 +43,11 @@
 
 void GameSharing::initGameSharing_iOS(void *initObj) {
     GameCenterDelegate *tmp = [GameCenterDelegate getInstance];
+#if __has_feature(objc_arc)
     tmp.viewController = (__bridge UIViewController *)initObj;
+#else
+    tmp.viewController = (UIViewController *)initObj;
+#endif
 }
 
 void GameSharing::openGameCenterLeaderboardsUI(int lId){
@@ -56,6 +63,9 @@ void GameSharing::openGameCenterLeaderboardsUI(int lId){
             }
         }else{
             GKGameCenterViewController* gkController = [[GKGameCenterViewController alloc] init];
+#if !__has_feature(objc_arc)
+            [gkController autorelease];
+#endif
             gkController.leaderboardIdentifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()];
             gkController.leaderboardTimeScope = GKLeaderboardTimeScopeAllTime;
 
@@ -80,7 +90,9 @@ void GameSharing::openAchievementUI(){
         }
     } else {
         GKGameCenterViewController* gkController = [[GKGameCenterViewController alloc] init];
-
+#if !__has_feature(objc_arc)
+        [gkController autorelease];
+#endif
         GameCenterDelegate *gameCenterDelegate = [GameCenterDelegate getInstance];
         gkController.gameCenterDelegate = gameCenterDelegate;
         
@@ -91,6 +103,9 @@ void GameSharing::openAchievementUI(){
 void GameSharing::submitScoreToLeaderboard(int score, int lId){
     if(numberOfLeaderboards >= lId){
         GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier: [NSString stringWithUTF8String:iosLeaderboardIds.at(lId).c_str()]];
+#if !__has_feature(objc_arc)
+        [scoreReporter autorelease];
+#endif
         scoreReporter.value = score;
         scoreReporter.context = 0;
         
@@ -109,6 +124,9 @@ void GameSharing::unlockAchievement(int aId){
     if(numberOfAchievements >= aId){
         GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:
                                       [NSString stringWithUTF8String:iosAchievementIds.at(aId).c_str()]];
+#if !__has_feature(objc_arc)
+        [achievement autorelease];
+#endif
         if (achievement){
             achievement.percentComplete = 100;
             achievement.showsCompletionBanner = true;
@@ -131,6 +149,9 @@ void GameSharing::startScoreRequest(int leaderboardID)
             signInPlayer();
         }else{
             GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
+#if !__has_feature(objc_arc)
+            [leaderboardRequest autorelease];
+#endif
             leaderboardRequest.identifier = [NSString stringWithUTF8String:iosLeaderboardIds.at(leaderboardID).c_str()];
             if (leaderboardRequest != nil) {
                 [leaderboardRequest loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error){

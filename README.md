@@ -46,9 +46,13 @@ Then you must change the AppController.mm file like this:
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    window.rootViewController = rootViewController;
+    window.rootViewController = _viewController;
 
-    GameSharing::initGameSharing((__bridge void *)rootViewController);
+#if __has_feature(objc_arc)
+    GameSharing::initGameSharing((__bridge void *)_viewController);
+#else
+    GameSharing::initGameSharing((void *)_viewController);
+#endif
 
 }
 
