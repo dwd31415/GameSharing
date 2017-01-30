@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/dwd31415/GameSharing.png?label=ready&title=Ready)](https://waffle.io/dwd31415/GameSharing)
 GameSharing
 ===========
 
